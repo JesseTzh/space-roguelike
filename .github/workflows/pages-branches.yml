@@ -109,4 +109,4 @@ jobs:
           fi
 
           git commit -m "Deploy ${{ steps.preview.outputs.branch }} preview"
-          git push origin gh-pages
+          git push origin HEAD:gh-pages
