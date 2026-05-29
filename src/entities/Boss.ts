@@ -16,13 +16,13 @@ export class Boss extends Phaser.GameObjects.Container {
   config!: BossConfig
   createdAt = 0
 
-  private body!: Phaser.GameObjects.Image
+  private visual!: Phaser.GameObjects.Image
 
   constructor(scene: Phaser.Scene, x: number, y: number, config: BossConfig) {
     super(scene, x, y)
-    this.body = scene.add.image(0, 0, config.texture)
-    this.body.setDisplaySize(280, 200)
-    this.add(this.body)
+    this.visual = scene.add.image(0, 0, config.texture)
+    this.visual.setDisplaySize(280, 200)
+    this.add(this.visual)
     scene.add.existing(this)
     this.config = config
     this.configId = config.id
@@ -47,9 +47,9 @@ export class Boss extends Phaser.GameObjects.Container {
 
   takeDamage(dmg: number): boolean {
     this.hp -= dmg
-    this.body.setTint(0xffaaaa)
+    this.visual.setTint(0xffaaaa)
     this.scene.time.delayedCall(80, () => {
-      if (this.active) this.body.clearTint()
+      if (this.active) this.visual.clearTint()
     })
     return this.hp <= 0
   }

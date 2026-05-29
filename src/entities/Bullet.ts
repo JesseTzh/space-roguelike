@@ -23,13 +23,13 @@ export class Bullet extends Phaser.GameObjects.Container implements Poolable {
   lifetime = 0
   radius = PLAYER_BULLET_RADIUS
 
-  private body!: Phaser.GameObjects.Image
+  private visual!: Phaser.GameObjects.Image
 
   constructor(scene: Phaser.Scene) {
     super(scene, -1000, -1000)
-    this.body = scene.add.image(0, 0, 'bullet_player_01')
-    this.body.setDisplaySize(14, 28)
-    this.add(this.body)
+    this.visual = scene.add.image(0, 0, 'bullet_player_01')
+    this.visual.setDisplaySize(14, 28)
+    this.add(this.visual)
     scene.add.existing(this)
     this.setDepth(50)
     this.setActive(false)
@@ -49,11 +49,11 @@ export class Bullet extends Phaser.GameObjects.Container implements Poolable {
     this.setActive(true)
     this.setVisible(true)
     if (this.isCrit) {
-      this.body.setTint(0xfff36b)
-      this.body.setDisplaySize(16, 32)
+      this.visual.setTint(0xfff36b)
+      this.visual.setDisplaySize(16, 32)
     } else {
-      this.body.clearTint()
-      this.body.setDisplaySize(14, 28)
+      this.visual.clearTint()
+      this.visual.setDisplaySize(14, 28)
     }
     const angle = Math.atan2(this.vy, this.vx)
     this.setRotation(angle + Math.PI / 2)

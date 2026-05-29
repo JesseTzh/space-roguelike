@@ -29,7 +29,6 @@ export class BossSystem {
       this.boss.destroy()
       this.boss = null
     }
-    const { Boss } = require('../entities/Boss') as typeof import('../entities/Boss')
     const px = x ?? this.scene.scale.width / 2
     const py = y ?? 220
     this.boss = new Boss(this.scene, px, py, cfg)

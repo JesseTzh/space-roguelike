@@ -30,13 +30,13 @@ export class Enemy extends Phaser.GameObjects.Container implements Poolable {
   attackPattern: 'straight' | 'aimed' | 'spread' | 'none' = 'none'
   createdAt = 0
 
-  private body!: Phaser.GameObjects.Image
+  private visual!: Phaser.GameObjects.Image
 
   constructor(scene: Phaser.Scene) {
     super(scene, -1000, -1000)
-    this.body = scene.add.image(0, 0, 'enemy_small_01')
-    this.body.setDisplaySize(56, 56)
-    this.add(this.body)
+    this.visual = scene.add.image(0, 0, 'enemy_small_01')
+    this.visual.setDisplaySize(56, 56)
+    this.add(this.visual)
     scene.add.existing(this)
     this.setDepth(20)
     this.setActive(false)
@@ -52,11 +52,11 @@ export class Enemy extends Phaser.GameObjects.Container implements Poolable {
     this.contactDamage = d.config.contactDamage
     this.money = d.config.money
     this.createdAt = performance.now()
-    this.body.setTexture(d.config.texture)
+    this.visual.setTexture(d.config.texture)
     let displaySize = 56
     if (d.config.id === 'enemy_heavy') displaySize = 80
     if (d.config.id === 'enemy_fast') displaySize = 48
-    this.body.setDisplaySize(displaySize, displaySize)
+    this.visual.setDisplaySize(displaySize, displaySize)
     this.radius = displaySize * 0.35
 
     if (d.config.attack) {
@@ -94,7 +94,7 @@ export class Enemy extends Phaser.GameObjects.Container implements Poolable {
     if (d.vyOverride !== undefined) this.vy = d.vyOverride
 
     this.setPosition(x, y)
-    this.body.clearTint()
+    this.visual.clearTint()
     this.setAlpha(1)
     this.active = true
     this.setActive(true)
@@ -123,9 +123,9 @@ export class Enemy extends Phaser.GameObjects.Container implements Poolable {
 
   takeDamage(dmg: number): boolean {
     this.hp -= dmg
-    this.body.setTint(0xffaaaa)
+    this.visual.setTint(0xffaaaa)
     this.scene.time.delayedCall(80, () => {
-      if (this.active) this.body.clearTint()
+      if (this.active) this.visual.clearTint()
     })
     return this.hp <= 0
   }

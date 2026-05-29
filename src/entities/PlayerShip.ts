@@ -17,14 +17,14 @@ export class PlayerShip extends Phaser.GameObjects.Container {
   shipHalfHeight = PLAYER_SHIP_HALF
   bodyRadius = PLAYER_BODY_HALF
 
-  private body!: Phaser.GameObjects.Image
+  private visual!: Phaser.GameObjects.Image
   private flickerTween: Phaser.Tweens.Tween | null = null
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y)
-    this.body = scene.add.image(0, 0, 'player_ship_01')
-    this.body.setDisplaySize(72, 72)
-    this.add(this.body)
+    this.visual = scene.add.image(0, 0, 'player_ship_01')
+    this.visual.setDisplaySize(72, 72)
+    this.add(this.visual)
     scene.add.existing(this)
     this.setDepth(30)
   }
@@ -57,15 +57,15 @@ export class PlayerShip extends Phaser.GameObjects.Container {
       this.flickerTween.stop()
       this.flickerTween = null
     }
-    this.body.setAlpha(1)
+    this.visual.setAlpha(1)
     this.flickerTween = this.scene.tweens.add({
-      targets: this.body,
+      targets: this.visual,
       alpha: 0.3,
       yoyo: true,
       repeat: 4,
       duration: 70,
       onComplete: () => {
-        this.body.setAlpha(1)
+        this.visual.setAlpha(1)
       },
     })
   }
