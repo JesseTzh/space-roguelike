@@ -1,0 +1,10 @@
+export const DESIGN_WIDTH = 720;
+export const DESIGN_HEIGHT = 1280;
+export const PLAYER_COLLISION_RADIUS = 26;
+export const ENEMY_BULLET_LIMIT = 120;
+export const PLAYER_BULLET_LIMIT = 150;
+export const ENEMY_LIMIT = 30;
+export const EXPLOSION_LIMIT = 30;
+export const INVINCIBLE_MS = 600;
+export const SAVE_KEY = 'space_roguelike_save_v1';
+//# sourceMappingURL=constants.js.map

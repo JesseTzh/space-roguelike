@@ -1,0 +1,9 @@
+export declare const DESIGN_WIDTH = 720;
+export declare const DESIGN_HEIGHT = 1280;
+export declare const PLAYER_COLLISION_RADIUS = 26;
+export declare const ENEMY_BULLET_LIMIT = 120;
+export declare const PLAYER_BULLET_LIMIT = 150;
+export declare const ENEMY_LIMIT = 30;
+export declare const EXPLOSION_LIMIT = 30;
+export declare const INVINCIBLE_MS = 600;
+export declare const SAVE_KEY = "space_roguelike_save_v1";
