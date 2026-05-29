@@ -1,0 +1,10 @@
+export const DESIGN_WIDTH = 720
+export const DESIGN_HEIGHT = 1280
+export const PLAYER_RADIUS = 28
+export const PLAYER_SPAWN_OFFSET_Y = 160
+export const INVINCIBLE_MS = 600
+export const PLAYER_BULLET_TTL_MS = 2000
+export const ENEMY_BULLET_TTL_MS = 5000
+export const MAX_PLAYER_BULLETS = 150
+export const MAX_ENEMY_BULLETS = 120
+export const MAX_ENEMIES = 30
