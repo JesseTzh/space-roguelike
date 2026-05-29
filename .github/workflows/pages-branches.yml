@@ -1,0 +1,112 @@
+name: Publish branch previews
+
+on:
+  push:
+    branches-ignore:
+      - gh-pages
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-branches
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.16.0"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Resolve preview path
+        id: preview
+        shell: bash
+        run: |
+          branch="${GITHUB_REF_NAME}"
+          safe_branch="$(printf '%s' "$branch" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's#[^a-z0-9._-]+#-#g; s#^-+##; s#-+$##')"
+
+          if [ -z "$safe_branch" ]; then
+            safe_branch="branch"
+          fi
+
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "safe_branch=$safe_branch" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout Pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: pages
+        continue-on-error: true
+
+      - name: Prepare Pages branch
+        shell: bash
+        run: |
+          if [ ! -d pages/.git ]; then
+            mkdir -p pages
+            cd pages
+            git init
+            git checkout -b gh-pages
+            git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          fi
+
+          cd pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish current branch build
+        shell: bash
+        run: |
+          target="pages/${{ steps.preview.outputs.safe_branch }}"
+          rm -rf "$target"
+          mkdir -p "$target"
+          cp -R dist/. "$target/"
+
+          touch pages/.nojekyll
+
+          {
+            printf '%s\n' '<!doctype html>'
+            printf '%s\n' '<html lang="en">'
+            printf '%s\n' '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Branch previews</title></head>'
+            printf '%s\n' '<body>'
+            printf '%s\n' '<h1>Branch previews</h1>'
+            printf '%s\n' '<ul>'
+            find pages -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort | while read -r name; do
+              printf '<li><a href="./%s/">%s</a></li>\n' "$name" "$name"
+            done
+            printf '%s\n' '</ul>'
+            printf '%s\n' '</body>'
+            printf '%s\n' '</html>'
+          } > pages/index.html
+
+      - name: Push Pages branch
+        shell: bash
+        run: |
+          cd pages
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No Pages changes to publish."
+            exit 0
+          fi
+
+          git commit -m "Deploy ${{ steps.preview.outputs.branch }} preview"
+          git push origin HEAD:gh-pages
